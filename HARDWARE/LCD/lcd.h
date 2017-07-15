@@ -89,12 +89,7 @@ typedef struct
 #define LBBLUE           0X2B12 //浅棕蓝色(选择条目的反色)
 
 
-/*颜色搭配*/
-#define BACKGROUNDCOLOR 0x0000
-#define EDGELINECOLOR  0X01CF
-#define WAVECOLOR 0xFFFF
-#define FONTCOLOR 0x7C49  
-#define APPARENTEDGELINECOLOR CYAN 
+
 
 void LCD_Init(void);													   	//初始化
 void LCD_DisplayOn(void);													//开显示
