@@ -1,53 +1,39 @@
 #include "sys.h"
 #include "delay.h"
 #include "usart.h"
-#include "led.h"
 #include "lcd.h"
-
- 
-//LCD显示实验-库函数版本
-//STM32F4工程-库函数版本
-//淘宝店铺：http://mcudev.taobao.com	
-
+#define XBase 5  //原点水平坐标
+#define YBase  205 //原点竖直坐标
+#define DivLength 25 //每个div的长度
+#define HoriDiv 10 //水平10个div
+#define VerDiv 8  //竖直8个div
+#define HoriEdge (XBase + HoriDiv * DivLength+2)
+#define VeriEdge YBase+2
 int main(void)
 { 
- 	u8 x=0;
-	u8 lcd_id[12];				//存放LCD ID字符串
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
-	delay_init(168);      //初始化延时函数
-	uart_init(115200);		//初始化串口波特率为115200
-	
-	LED_Init();					  //初始化LED
+	delay_init(168); 
+	uart_init(9600);
  	LCD_Init();           //初始化LCD FSMC接口
-	POINT_COLOR=RED;      //画笔颜色：红色
-	sprintf((char*)lcd_id,"LCD ID:%04X",lcddev.id);//将LCD ID打印到lcd_id数组。				 	
-  	while(1) 
-	{		 
-		switch(x)
-		{
-			case 0:LCD_Clear(WHITE);break;
-			case 1:LCD_Clear(BLACK);break;
-			case 2:LCD_Clear(BLUE);break;
-			case 3:LCD_Clear(RED);break;
-			case 4:LCD_Clear(MAGENTA);break;
-			case 5:LCD_Clear(GREEN);break;
-			case 6:LCD_Clear(CYAN);break; 
-			case 7:LCD_Clear(YELLOW);break;
-			case 8:LCD_Clear(BRRED);break;
-			case 9:LCD_Clear(GRAY);break;
-			case 10:LCD_Clear(LGRAY);break;
-			case 11:LCD_Clear(BROWN);break;
-		}
-		POINT_COLOR=RED;	  
-		LCD_ShowString(30,40,210,24,24,"mcudev STM32F4");	
-		LCD_ShowString(30,70,200,16,16,"TFTLCD TEST");
-		LCD_ShowString(30,90,200,16,16,"mcudev.taobao.com");
- 		LCD_ShowString(30,110,200,16,16,lcd_id);		//显示LCD ID	      					 
-		LCD_ShowString(30,130,200,12,12,"2015/08/04");	 
-		LCD_DrawRectangle(0,0,320,240);
-	  x++;
-		if(x==12)x=0;
-		LED0=!LED0;	 
-		delay_ms(1000);	
-	} 
+	
+	LCD_Clear(BACKGROUNDCOLOR);
+	/*绘制边框线*/
+	POINT_COLOR = LIGHTBLUE;
+	LCD_DrawRectangle(0,0,HoriEdge,VeriEdge);
+	LCD_DrawRectangle(HoriEdge,0,320,240);
+	LCD_DrawRectangle(0,0,320,240);
+	/*绘制div分线*/
+	POINT_COLOR = EDGELINECOLOR;
+	for(int i = 0;i<=VerDiv;i++)
+		LCD_DrawDottedLine(XBase,YBase-i*DivLength,XBase + HoriDiv * DivLength, YBase-i*DivLength);
+	for(int i = 0;i<=HoriDiv;i++)
+		LCD_DrawDottedLine(XBase+i*DivLength,YBase,XBase+i*DivLength, YBase- VerDiv * DivLength);
+	/*绘制坐标轴*/
+	POINT_COLOR = APPARENTEDGELINECOLOR;
+	LCD_DrawLine(XBase,YBase - 4 * DivLength,XBase + HoriDiv * DivLength,YBase - 4 * DivLength);
+	LCD_DrawLine(XBase + 5*DivLength ,YBase,XBase + 5*DivLength,YBase - VerDiv * DivLength);
+  while(1) 
+	{	
+	 	
+	}
 }

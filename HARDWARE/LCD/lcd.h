@@ -87,7 +87,15 @@ typedef struct
 
 #define LGRAYBLUE        0XA651 //浅灰蓝色(中间层颜色)
 #define LBBLUE           0X2B12 //浅棕蓝色(选择条目的反色)
-	    															  
+
+
+/*颜色搭配*/
+#define BACKGROUNDCOLOR 0x0000
+#define EDGELINECOLOR  0X01CF
+#define WAVECOLOR 0xFFFF
+#define FONTCOLOR 0x7C49  
+#define APPARENTEDGELINECOLOR CYAN 
+
 void LCD_Init(void);													   	//初始化
 void LCD_DisplayOn(void);													//开显示
 void LCD_DisplayOff(void);													//关显示
@@ -105,7 +113,7 @@ void LCD_ShowChar(u16 x,u16 y,u8 num,u8 size,u8 mode);						//显示一个字符
 void LCD_ShowNum(u16 x,u16 y,u32 num,u8 len,u8 size);  						//显示一个数字
 void LCD_ShowxNum(u16 x,u16 y,u32 num,u8 len,u8 size,u8 mode);				//显示 数字
 void LCD_ShowString(u16 x,u16 y,u16 width,u16 height,u8 size,u8 *p);		//显示一个字符串,12/16字体
-
+void LCD_DrawDottedLine(u16 x1, u16 y1, u16 x2, u16 y2);//画虚线
 void LCD_WriteReg(u16 LCD_Reg, u16 LCD_RegValue);
 u16 LCD_ReadReg(u16 LCD_Reg);
 void LCD_WriteRAM_Prepare(void);
