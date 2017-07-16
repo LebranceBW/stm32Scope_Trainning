@@ -15,13 +15,9 @@ int main(void)
 	display_Init();
 	DMA_ADCToMemory_Init((u32)buffer,1024);
 	Adc_Init();
-
-//	u16 adcx;
   while(1) 
-	{	
-//	 	adcx=Get_Adc_Average(ADC_Channel_5,20);//获取通道5的转换值，20次取平均
-//		float temp=(float)adcx*(3.3/4096);
-//		measureDisplay(temp);
-//		delay_ms(250);
+	{
+		display_DrawWave(buffer,1024);
+		delay_ms(10);
 	}
 }

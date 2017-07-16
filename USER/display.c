@@ -10,16 +10,8 @@ void display_Init()
 	LCD_DrawRectangle(0,0,HoriEdge,VeriEdge);
 	LCD_DrawRectangle(HoriEdge,0,320,240);
 	LCD_DrawRectangle(0,0,320,240);
-	/*绘制div分线*/
-	POINT_COLOR = EDGELINECOLOR;
-	for(int i = 0;i<=VerDiv;i++)
-		LCD_DrawDottedLine(XBase,YBase-i*DivLength,XBase + HoriDiv * DivLength, YBase-i*DivLength);
-	for(int i = 0;i<=HoriDiv;i++)
-		LCD_DrawDottedLine(XBase+i*DivLength,YBase,XBase+i*DivLength, YBase- VerDiv * DivLength);
-	/*绘制坐标轴*/
-	POINT_COLOR = APPARENTEDGELINECOLOR;
-	LCD_DrawLine(XBase,YBase - 4 * DivLength,XBase + HoriDiv * DivLength,YBase - 4 * DivLength);
-	LCD_DrawLine(XBase + 5*DivLength ,YBase,XBase + 5*DivLength,YBase - VerDiv * DivLength);
+	
+	display_DrawAxis();
 }
 
 void measureDisplay(float val)
@@ -38,4 +30,41 @@ void measureDisplay(float val)
 	LCD_ShowString(Right_1st_x,Right_1st_y,64,16,16,s);
 }
 
+void display_DrawWave(u16 *a,u16 length)
+{
+	u8 step = length / Hori_Length;//求单步步长
+	display_ClearArea();
+	display_DrawAxis();
+	for(int i = 0;i<Hori_Length;i++)
+	{
+		display_DrawDotWithCoordinate(i*step,a[i]);
+	}
+}
+
+void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*进行坐标变换后再绘点*/
+{
+	u16 XPose = coordinateX + XBase_Pos;
+	u16 YPose = YBase_Pos - (u8)((int)coordinateY*Veri_Length/ 0xFFF);
+	POINT_COLOR = WAVECOLOR;
+	if((XPose <Hori_Length) &&(YPose <Veri_Length))
+	LCD_DrawPoint(XPose,YPose);
+}
+
+void display_DrawAxis() /*绘制坐标轴与分割线*/
+{
+	/*绘制div分线*/
+	POINT_COLOR = EDGELINECOLOR;
+	for(int i = 0;i<=VeriDiv;i++)
+		LCD_DrawDottedLine(XBase_Pos,YBase_Pos-i*DivLength,XBase_Pos+Hori_Length, YBase_Pos-i*DivLength);
+	for(int i = 0;i<=HoriDiv;i++)
+		LCD_DrawDottedLine(XBase_Pos+i*DivLength,YBase_Pos,XBase_Pos+i*DivLength, YBase_Pos- Veri_Length);
+	/*绘制坐标轴*/
+	POINT_COLOR = APPARENTEDGELINECOLOR;
+	LCD_DrawLine(XBase_Pos,YBase_Pos - 4 * DivLength,XBase_Pos + Hori_Length,YBase_Pos - 4 * DivLength);
+	LCD_DrawLine(XBase_Pos + 5*DivLength ,YBase_Pos,XBase_Pos + 5*DivLength,YBase_Pos - Veri_Length);
+}
+void display_ClearArea() /*清空绘图区再绘制坐标轴*/
+{
+	LCD_Fill(XBase_Pos,YBase_Pos - Veri_Length,XBase_Pos + Hori_Length,YBase_Pos,BACKGROUNDCOLOR);
+}
 

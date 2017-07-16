@@ -2538,8 +2538,6 @@ void LCD_Clear(u16 color)
 //color:要填充的颜色
 void LCD_Fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color)
 {          
-	u16 i,j;
-	u16 xlen=0;
 	u16 temp;
 	if((lcddev.id==0X6804)&&(lcddev.dir==1))	//6804横屏的时候特殊处理  
 	{
@@ -2557,13 +2555,13 @@ void LCD_Fill(u16 sx,u16 sy,u16 ex,u16 ey,u16 color)
 		lcddev.setycmd=0X2A;  	 
  	}else
 	{
-		xlen=ex-sx+1;	 
-		for(i=sy;i<=ey;i++)
-		{
-		 	LCD_SetCursor(sx,i);      				//设置光标位置 
-			LCD_WriteRAM_Prepare();     			//开始写入GRAM	  
-			for(j=0;j<xlen;j++)LCD->LCD_RAM=color;	//显示颜色 	    
-		}
+	for(u16 x = sx;x<=ex;x++)
+		for(u16 y = sy;y<ey;y++)
+			{
+				LCD_SetCursor(x,y);		//设置光标位置 
+				LCD_WriteRAM_Prepare();	//开始写入GRAM
+				LCD->LCD_RAM=color; 
+			}
 	}	 
 }  
 //在指定区域内填充指定颜色块			 
