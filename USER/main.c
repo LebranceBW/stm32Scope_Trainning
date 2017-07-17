@@ -17,7 +17,7 @@ int main(void)
 	Adc_Init();
   while(1) 
 	{
-		display_DrawWave(buffer,1024);
+		display_DrawWave(buffer,1024,1);
 		delay_ms(10);
 	}
 }

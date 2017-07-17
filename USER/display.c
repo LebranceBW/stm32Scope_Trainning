@@ -30,12 +30,11 @@ void measureDisplay(float val)
 	LCD_ShowString(Right_1st_x,Right_1st_y,64,16,16,s);
 }
 
-void display_DrawWave(u16 *a,u16 length)
+void display_DrawWave(u16 *a,u16 length,u16 step)
 {
-	u8 step = length / Hori_Length;//求单步步长
 	display_ClearArea();
 	display_DrawAxis();
-	for(int i = 0;i<Hori_Length;i++)
+	for(int i = 0;(i<Hori_Length)&&(i*step<length);i++)
 	{
 		display_DrawDotWithCoordinate(i*step,a[i]);
 	}
