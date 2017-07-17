@@ -77,7 +77,11 @@ u16 Get_Adc_Average(u8 ch,u8 times)
 	return temp_val/times;
 } 
 	 
-
+void ADC_IRQHandler(void)
+{
+	
+	
+}
 
 
 

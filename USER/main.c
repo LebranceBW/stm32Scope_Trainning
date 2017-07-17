@@ -6,7 +6,7 @@
 #include "adc.h"
 #include "dma.h"
 
-u16 buffer[1024]; //缓存区
+u16 buffer[2048]; //缓存区
 int main(void)
 { 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
@@ -17,7 +17,20 @@ int main(void)
 	Adc_Init();
   while(1) 
 	{
-		display_DrawWave(buffer,1024,1);
+		ADC_DMACmd(ADC1,DISABLE);
+		DMA_Cmd(DMA2_Stream0, DISABLE);
+		
+		display_DrawWave(buffer,2048,1);
+		
+		
+		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TEIF0);
+		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
+		DMA_Cmd(DMA2_Stream0,ENABLE);
+		ADC_ClearFlag(ADC1,ADC_FLAG_OVR);
+		ADC_DMACmd(ADC1,ENABLE);
+		ADC_SoftwareStartConv(ADC1);
+		
+		
 		delay_ms(10);
 	}
 }
