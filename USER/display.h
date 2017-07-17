@@ -21,13 +21,25 @@
 #define VeriEdge (YBase_Pos+2)
 #define Hori_Length (HoriDiv * DivLength) //横轴长
 #define Veri_Length (VeriDiv* DivLength)	//纵轴长
+
 /*参数显示相关的定义*/
 #define Right_1st_x HoriEdge + 1
 #define Right_1st_y 1
+
+/*刻度显示定义*/
+#define Character_Width 8
+#define XScale_XPos	XBase_Pos						//水平刻度显示位置
+#define XScale_YPos VeriEdge + 2
+#define YScale_XPos	(XScale_XPos + Character_Width*10+Character_Width)					//垂直刻度显示位置
+#define YScale_YPos XScale_YPos
+
+
 void display_Init(void);
 void measureDisplay(float val);
 void display_DrawAxis(void);
 void display_ClearArea(void);
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY); /*进行坐标变换后再绘点*/
-void display_DrawWave(u16 *a,u16 length,u16 step);
+void display_DrawWave(u16 *a,u16 length);
+void display_XScale(void);
+void display_YScale(void);
 #endif

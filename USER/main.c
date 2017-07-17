@@ -20,7 +20,9 @@ int main(void)
 		ADC_DMACmd(ADC1,DISABLE);
 		DMA_Cmd(DMA2_Stream0, DISABLE);
 		
-		display_DrawWave(buffer,2048,1);
+		display_DrawWave(buffer,2048);
+		display_XScale();
+		display_YScale();
 		
 		
 		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TEIF0);

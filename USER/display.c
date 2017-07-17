@@ -1,5 +1,5 @@
 #include "display.h"
-
+u16 step;
 void display_Init()
 {
 	LCD_Init();           //初始化LCD FSMC接口
@@ -10,7 +10,7 @@ void display_Init()
 	LCD_DrawRectangle(0,0,HoriEdge,VeriEdge);
 	LCD_DrawRectangle(HoriEdge,0,320,240);
 	LCD_DrawRectangle(0,0,320,240);
-	
+	step = 1;
 	display_DrawAxis();
 }
 
@@ -26,11 +26,10 @@ void measureDisplay(float val)
 	s[4] = temp % 10 +'0';
 	s[5] = 'V';
 	s[6] = 0;
-	LCD_ShowxNum(Right_1st_x,Right_1st_y,val,4,16,0);
 	LCD_ShowString(Right_1st_x,Right_1st_y,64,16,16,s);
 }
 
-void display_DrawWave(u16 *a,u16 length,u16 step)
+void display_DrawWave(u16 *a,u16 length)
 {
 	display_ClearArea();
 	display_DrawAxis();
@@ -67,3 +66,34 @@ void display_ClearArea() /*清空绘图区再绘制坐标轴*/
 	LCD_Fill(XBase_Pos,YBase_Pos - Veri_Length,XBase_Pos + Hori_Length,YBase_Pos,BACKGROUNDCOLOR);
 }
 
+void display_XScale()
+{
+	POINT_COLOR = WHITE;
+	BACK_COLOR = BACKGROUNDCOLOR;
+	u8 s[11] = {(u8)'X',(u8)':',(u8)'0',(u8)'0',(u8)'u',(u8)'s',(u8)'/',(u8)'d',(u8)'i',(u8)'v',0};
+	if(step>1000) 
+	{
+		s[5] = 'm';
+		step = step / 1000;
+	}
+	if(step/10 == 0)
+		s[2] = (u8)' ';
+	s[3] = (u8)(step % 10 + '0');	
+	LCD_ShowString(XScale_XPos,XScale_YPos,80,16,16,s);
+}
+
+void display_YScale()
+{
+	POINT_COLOR = WHITE;
+	BACK_COLOR = BACKGROUNDCOLOR;
+	u8 s[11] = {(u8)'Y',(u8)':',(u8)'0',(u8)'0',(u8)'u',(u8)'V',(u8)'/',(u8)'d',(u8)'i',(u8)'v',0};
+//	if(step>1000) 
+//	{
+//		s[5] = 'm';
+//		step = step / 1000;
+//	}
+//	if(step/10 == 0)
+//		s[2] = (u8)' ';
+//	s[3] = (u8)(step % 10 + '0');	
+	LCD_ShowString(YScale_XPos,YScale_YPos,80,16,16,s);
+}
