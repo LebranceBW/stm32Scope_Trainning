@@ -7,6 +7,7 @@
 #include "dma.h"
 #include "Key.h"
 #include "timer.h"
+#include "dac.h"
 u16 buffer[2048]; //缓存区
 u8 pause = 0;
 extern uint32_t	TIM5CH1_CAPTURE_VAL;	//输入捕获值  
@@ -21,9 +22,11 @@ int main(void)
 	DMA_ADCToMemory_Init((u32)buffer,2048);
 	Adc_Init();
 	Key_Init();
-	display_XScale();
-	display_YScale();
+	Dac1_Init();
+
 	TIM5_CH1_Cap_Init(0XFFFFFFFF,84-1); //以1Mhz的频率计数
+	
+	Dac1_Set_Vol(1500);//设置DA输出值为1.8V
   while(1) 
 	{
 		ADC_DMACmd(ADC1,DISABLE);

@@ -16,6 +16,8 @@ void display_Init()
 	stepIndex = 0;
 	display_DrawAxis();
 	display_Mode();
+	display_XScale();
+	display_YScale();
 }
 
 //void measureDisplay(float val)
