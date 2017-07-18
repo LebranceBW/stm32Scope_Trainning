@@ -23,6 +23,6 @@
 
 	#include "sys.h"
 void Key_Init(void);
-	
+extern u8 pause;	
 	
 #endif

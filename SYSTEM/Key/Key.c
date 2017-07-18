@@ -46,6 +46,8 @@ void Key_NVIC_Init()
 	NVIC_Init(&NVIC_Struct);
 	NVIC_Struct.NVIC_IRQChannel = EXTI2_IRQn;
 	NVIC_Init(&NVIC_Struct);
+	NVIC_Struct.NVIC_IRQChannel = EXTI9_5_IRQn;
+	NVIC_Init(&NVIC_Struct);	
 }
 void Key_Init()
 {
@@ -79,7 +81,15 @@ void EXTI3_IRQHandler(void) //下键
 {}
 void EXTI4_IRQHandler(void) //复位
 {}
-void EXTI9_5IRQHandler(void) //确认
-{}
+void EXTI9_5_IRQHandler(void) //确认 暂时用作暂停功能
+{
+	delay_ms(20);
+	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_5))
+	{
+		pause = !pause;
+		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_5));
+	}
+	EXTI_ClearITPendingBit(EXTI_Line5);
+}
 
 	

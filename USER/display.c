@@ -37,7 +37,7 @@ void display_DrawWave(u16 *a,u16 length)
 	u16 step = stepsRange[stepIndex];
 	for(int i = 0;(i<Hori_Length)&&(i*step<length);i++)
 	{
-		display_DrawDotWithCoordinate(i*step,a[i]);
+		display_DrawDotWithCoordinate(i,a[i*step]);
 	}
 }
 
