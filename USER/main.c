@@ -22,15 +22,12 @@ int main(void)
 	display_YScale();
   while(1) 
 	{
-		if(!pause)
-		{
-			ADC_DMACmd(ADC1,DISABLE);
+		
+		ADC_DMACmd(ADC1,DISABLE);
 			DMA_Cmd(DMA2_Stream0, DISABLE);
-			
-			display_DrawWave(buffer,2048);
-
-			
-			
+		display_DrawWave(buffer,2048);
+		if(!pause)
+		{		
 			DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TEIF0);
 			DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
 			DMA_Cmd(DMA2_Stream0,ENABLE);

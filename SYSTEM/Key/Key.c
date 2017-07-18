@@ -1,6 +1,8 @@
 #include "Key.h"
 #include "display.h"
 #include "delay.h"
+
+
 void Key_GPIOF_Init()
 {
 	RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOF,ENABLE);
@@ -48,6 +50,8 @@ void Key_NVIC_Init()
 	NVIC_Init(&NVIC_Struct);
 	NVIC_Struct.NVIC_IRQChannel = EXTI9_5_IRQn;
 	NVIC_Init(&NVIC_Struct);	
+	NVIC_Struct.NVIC_IRQChannel = EXTI4_IRQn;
+	NVIC_Init(&NVIC_Struct);
 }
 void Key_Init()
 {
@@ -62,7 +66,8 @@ void EXTI1_IRQHandler(void) // 左键
 	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1))
 	{
-		display_XScale_Cmd(Falling);
+		if(!moveFlag)display_XScale_Cmd(Falling);
+		else display_XMove_Cmd(Left);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line1);
@@ -72,7 +77,8 @@ void EXTI2_IRQHandler(void) //右键
 	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_2))
 	{
-		display_XScale_Cmd(Raising);
+		if(!moveFlag)display_XScale_Cmd(Raising);
+		else display_XMove_Cmd(Right);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_2));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line2);
@@ -80,7 +86,17 @@ void EXTI2_IRQHandler(void) //右键
 void EXTI3_IRQHandler(void) //下键
 {}
 void EXTI4_IRQHandler(void) //复位
-{}
+{
+	delay_ms(20);
+	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_4))
+	{
+		moveFlag = !moveFlag;
+		display_Mode();
+		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_4));
+	}
+	
+	EXTI_ClearITPendingBit(EXTI_Line4);
+}
 void EXTI9_5_IRQHandler(void) //确认 暂时用作暂停功能
 {
 	delay_ms(20);
