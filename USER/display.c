@@ -18,20 +18,20 @@ void display_Init()
 	display_Mode();
 }
 
-void measureDisplay(float val)
-{
-	POINT_COLOR = BLACK;
-	u32 temp = val * 1000;
-	u8 s[7];
-	s[0] = temp / 1000 +'0';
-	s[1] = '.';
-	s[2] = ((temp = temp / 10),temp/100 +'0');
-	s[3] = ((temp = temp / 10),temp/10 +'0');
-	s[4] = temp % 10 +'0';
-	s[5] = 'V';
-	s[6] = 0;
-	LCD_ShowString(Right_1st_x,Right_1st_y,64,16,16,s);
-}
+//void measureDisplay(float val)
+//{
+//	POINT_COLOR = BLACK;
+//	u32 temp = val * 1000;
+//	u8 s[7];
+//	s[0] = temp / 1000 +'0';
+//	s[1] = '.';
+//	s[2] = ((temp = temp / 10),temp/100 +'0');
+//	s[3] = ((temp = temp / 10),temp/10 +'0');
+//	s[4] = temp % 10 +'0';
+//	s[5] = 'V';
+//	s[6] = 0;
+//	LCD_ShowString(Freq_XPos,Right_1st_y,64,16,16,s);
+//}
 
 void display_DrawWave(u16 *a,u16 length)
 {
@@ -151,5 +151,19 @@ void display_XMove_Cmd(LeftOrRightType lr)
 	}
 	display_Mode();
 	display_DrawWave(buffer,2048);
+}
+
+void display_Frequence(float val)
+{
+	POINT_COLOR = WHITE;
+	u32 temp = val * 100;
+	u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
+	s[2] = (temp/1000==0)?' ':temp/1000+'0';
+	temp %=1000;
+	s[3] = temp/100+'0';
+	temp %=100;	
+	s[5] = temp / 10 +'0';
+	s[6] = temp % 10 +'0';	
+	LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
 }
 

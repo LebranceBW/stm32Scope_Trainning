@@ -365,7 +365,7 @@
               <MiscControls></MiscControls>
               <Define>STM32F40_41xxx,USE_STDPERIPH_DRIVER</Define>
               <Undefine></Undefine>
-              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\Key;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\DMA;..\HARDWARE\LCD;..\HARDWARE\ADC;..\FWLIB\inc</IncludePath>
+              <IncludePath>..\CORE;..\SYSTEM\delay;..\SYSTEM\sys;..\SYSTEM\Key;..\SYSTEM\usart;..\USER;..\HARDWARE\LED;..\HARDWARE\DMA;..\HARDWARE\TIMER;..\HARDWARE\LCD;..\HARDWARE\ADC;..\FWLIB\inc</IncludePath>
             </VariousControls>
           </Cads>
           <Aads>
@@ -458,6 +458,11 @@
               <FileType>1</FileType>
               <FilePath>..\SYSTEM\Key\Key.c</FilePath>
             </File>
+            <File>
+              <FileName>timer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\HARDWARE\TIMER\timer.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -537,6 +542,11 @@
               <FileName>stm32f4xx_exti.c</FileName>
               <FileType>1</FileType>
               <FilePath>..\FWLIB\src\stm32f4xx_exti.c</FilePath>
+            </File>
+            <File>
+              <FileName>stm32f4xx_tim.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>..\FWLIB\src\stm32f4xx_tim.c</FilePath>
             </File>
           </Files>
         </Group>

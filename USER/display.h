@@ -2,6 +2,7 @@
 #define DISPLAY_H__
 
 #include "lcd.h"
+#include "sys.h"
 /*颜色搭配*/
 #define BACKGROUNDCOLOR 0x0000
 #define EDGELINECOLOR  0X01CF
@@ -23,8 +24,8 @@
 #define Veri_Length (VeriDiv* DivLength)	//纵轴长
 
 /*参数显示相关的定义*/
-#define Right_1st_x HoriEdge + 1
-#define Right_1st_y 1
+#define Freq_XPos HoriEdge + 1
+#define Freq_YPos 1
 
 /*刻度显示定义*/
 #define Character_Width 8
@@ -45,7 +46,7 @@ typedef enum RaisingOrFalling RaisingOrFallingType;
 extern u16 buffer[2048];
 
 void display_Init(void);
-void measureDisplay(float val);
+//void measureDisplay(float val);
 void display_DrawAxis(void);
 void display_ClearArea(void);
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY); /*进行坐标变换后再绘点*/
@@ -55,4 +56,5 @@ void display_YScale(void);
 void display_XScale_Cmd(RaisingOrFallingType m);
 void display_XMove_Cmd(LeftOrRightType lr);
 void display_Mode(void);
+void display_Frequence(float val);
 #endif
