@@ -5,7 +5,7 @@
 #include "display.h"
 #include "adc.h"
 #include "dma.h"
-
+#include "Key.h"
 u16 buffer[2048]; //»º´æÇø
 int main(void)
 { 
@@ -15,14 +15,16 @@ int main(void)
 	display_Init();
 	DMA_ADCToMemory_Init((u32)buffer,1024);
 	Adc_Init();
+	Key_Init();
+	display_XScale();
+	display_YScale();
   while(1) 
 	{
 		ADC_DMACmd(ADC1,DISABLE);
 		DMA_Cmd(DMA2_Stream0, DISABLE);
 		
 		display_DrawWave(buffer,2048);
-		display_XScale();
-		display_YScale();
+
 		
 		
 		DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TEIF0);

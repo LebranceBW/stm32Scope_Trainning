@@ -1,5 +1,6 @@
 #include "display.h"
-u16 step;
+u16 stepsRange[] = {1,2,5,10,20,50,100,200,500};
+u8 stepIndex = 0;
 void display_Init()
 {
 	LCD_Init();           //初始化LCD FSMC接口
@@ -10,7 +11,7 @@ void display_Init()
 	LCD_DrawRectangle(0,0,HoriEdge,VeriEdge);
 	LCD_DrawRectangle(HoriEdge,0,320,240);
 	LCD_DrawRectangle(0,0,320,240);
-	step = 1;
+	stepIndex = 0;
 	display_DrawAxis();
 }
 
@@ -33,6 +34,7 @@ void display_DrawWave(u16 *a,u16 length)
 {
 	display_ClearArea();
 	display_DrawAxis();
+	u16 step = stepsRange[stepIndex];
 	for(int i = 0;(i<Hori_Length)&&(i*step<length);i++)
 	{
 		display_DrawDotWithCoordinate(i*step,a[i]);
@@ -70,23 +72,31 @@ void display_XScale()
 {
 	POINT_COLOR = WHITE;
 	BACK_COLOR = BACKGROUNDCOLOR;
-	u8 s[11] = {(u8)'X',(u8)':',(u8)'0',(u8)'0',(u8)'u',(u8)'s',(u8)'/',(u8)'d',(u8)'i',(u8)'v',0};
+	u16 step = stepsRange[stepIndex];
+	u8 s[12] = {(u8)'X',(u8)':',(u8)'0',(u8)'0',(u8)'0',(u8)'u',(u8)'s',(u8)'/',(u8)'d',(u8)'i',(u8)'v',(u8)'\0'};
 	if(step>1000) 
 	{
 		s[5] = 'm';
 		step = step / 1000;
 	}
-	if(step/10 == 0)
+	if(step/100 == 0)
 		s[2] = (u8)' ';
-	s[3] = (u8)(step % 10 + '0');	
-	LCD_ShowString(XScale_XPos,XScale_YPos,80,16,16,s);
+	else 
+		s[2] = step/100 +'0';
+
+	if(step/10 == 0)
+		s[3] = (u8)' ';
+	else 
+		s[3] = (step/10)%10 +'0' ;	 
+	s[4] = (u8)(step % 10 + '0');	
+	LCD_ShowString(XScale_XPos,XScale_YPos,88,16,16,s);
 }
 
 void display_YScale()
 {
 	POINT_COLOR = WHITE;
 	BACK_COLOR = BACKGROUNDCOLOR;
-	u8 s[11] = {(u8)'Y',(u8)':',(u8)'0',(u8)'0',(u8)'u',(u8)'V',(u8)'/',(u8)'d',(u8)'i',(u8)'v',0};
+	u8 s[12] = {(u8)'X',(u8)':',(u8)'0',(u8)'0',(u8)'0',(u8)'u',(u8)'s',(u8)'/',(u8)'d',(u8)'i',(u8)'v',(u8)'\0'};
 //	if(step>1000) 
 //	{
 //		s[5] = 'm';
@@ -95,5 +105,21 @@ void display_YScale()
 //	if(step/10 == 0)
 //		s[2] = (u8)' ';
 //	s[3] = (u8)(step % 10 + '0');	
-	LCD_ShowString(YScale_XPos,YScale_YPos,80,16,16,s);
+	LCD_ShowString(YScale_XPos,YScale_YPos,88,16,16,s);
+}
+
+void display_XScale_Cmd(RaisingOrFallingType m)
+{
+	if(m == Raising)
+	{
+		if(stepIndex < 8)
+		stepIndex++;
+		display_XScale();
+	}
+	else if(m == Falling)
+	{
+		if(stepIndex > 0)
+		stepIndex--;
+		display_XScale();
+	}
 }

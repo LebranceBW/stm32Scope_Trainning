@@ -30,8 +30,11 @@
 #define Character_Width 8
 #define XScale_XPos	XBase_Pos						//水平刻度显示位置
 #define XScale_YPos VeriEdge + 2
-#define YScale_XPos	(XScale_XPos + Character_Width*10+Character_Width)					//垂直刻度显示位置
+#define YScale_XPos	(XScale_XPos + Character_Width*12+Character_Width)					//垂直刻度显示位置
 #define YScale_YPos XScale_YPos
+
+enum RaisingOrFalling {Raising,Falling};
+typedef enum RaisingOrFalling RaisingOrFallingType;
 
 
 void display_Init(void);
@@ -42,4 +45,5 @@ void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY); /*进行坐标变
 void display_DrawWave(u16 *a,u16 length);
 void display_XScale(void);
 void display_YScale(void);
+void display_XScale_Cmd(RaisingOrFallingType m);
 #endif
