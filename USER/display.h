@@ -30,12 +30,19 @@
 #define Character_Width 8
 #define XScale_XPos	XBase_Pos						//水平刻度显示位置
 #define XScale_YPos VeriEdge + 2
-#define YScale_XPos	(XScale_XPos + Character_Width*12+Character_Width)					//垂直刻度显示位置
+#define YScale_XPos	(XScale_XPos + Character_Width*12)					//垂直刻度显示位置
 #define YScale_YPos XScale_YPos
 
+/*模式显示定义*/
+#define Mode_XPos (YScale_XPos+Character_Width*12)
+#define Mode_YPos (XScale_YPos)
 enum RaisingOrFalling {Raising,Falling};
+enum LeftOrRight {Left,Right};
+
+typedef enum LeftOrRight LeftOrRightType;
 typedef enum RaisingOrFalling RaisingOrFallingType;
 
+extern u16 buffer[2048];
 
 void display_Init(void);
 void measureDisplay(float val);
@@ -46,4 +53,6 @@ void display_DrawWave(u16 *a,u16 length);
 void display_XScale(void);
 void display_YScale(void);
 void display_XScale_Cmd(RaisingOrFallingType m);
+void display_XMove_Cmd(LeftOrRightType lr);
+void display_Mode(void);
 #endif

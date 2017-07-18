@@ -24,5 +24,5 @@
 	#include "sys.h"
 void Key_Init(void);
 extern u8 pause;	
-	
+extern u8 moveFlag;
 #endif

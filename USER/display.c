@@ -38,7 +38,7 @@ void display_DrawWave(u16 *a,u16 length)
 	display_ClearArea();
 	display_DrawAxis();
 	u16 step = stepsRange[stepIndex];
-	for(int i = 0;(i<Hori_Length)&&(i*step<length);i++)
+	for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
 	{
 		display_DrawDotWithCoordinate(i,a[i*step+xBase]);
 	}
@@ -127,14 +127,14 @@ void display_XScale_Cmd(RaisingOrFallingType m) //²½³¤±ä»»
 	{
 		if(stepIndex < 8)
 		stepIndex++;
-		display_XScale();
 	}
 	else if(m == Falling)
 	{
 		if(stepIndex > 0)
 		stepIndex--;
-		display_XScale();
 	}
+	display_XScale();
+	display_DrawWave(buffer,2048);
 }
 
 void display_XMove_Cmd(LeftOrRightType lr)
@@ -150,5 +150,6 @@ void display_XMove_Cmd(LeftOrRightType lr)
 		if(xBase >2048) xBase = 2048;
 	}
 	display_Mode();
+	display_DrawWave(buffer,2048);
 }
 
