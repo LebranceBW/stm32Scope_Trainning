@@ -3,6 +3,9 @@ u16 stepsRange[] = {1,2,5,10,20,50,100,200,500};
 u8 stepIndex = 0;
 u16 xBase = 0; 
 u8 moveFlag = 0;
+
+u16 peakValue = 0;
+
 void display_Init()
 {
 	LCD_Init();           //初始化LCD FSMC接口
@@ -20,30 +23,23 @@ void display_Init()
 	display_YScale();
 }
 
-//void measureDisplay(float val)
-//{
-//	POINT_COLOR = BLACK;
-//	u32 temp = val * 1000;
-//	u8 s[7];
-//	s[0] = temp / 1000 +'0';
-//	s[1] = '.';
-//	s[2] = ((temp = temp / 10),temp/100 +'0');
-//	s[3] = ((temp = temp / 10),temp/10 +'0');
-//	s[4] = temp % 10 +'0';
-//	s[5] = 'V';
-//	s[6] = 0;
-//	LCD_ShowString(Freq_XPos,Right_1st_y,64,16,16,s);
-//}
-
 void display_DrawWave(u16 *a,u16 length)
 {
+	peakValue = 0; //峰值
+	
+	
 	display_ClearArea();
 	display_DrawAxis();
 	u16 step = stepsRange[stepIndex];
 	for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
 	{
+		u16 temp = a[i*step+xBase];
+		if(temp >= peakValue) 
+				peakValue = temp;
 		display_DrawDotWithCoordinate(i,a[i*step+xBase]);
 	}
+	display_PeakValue();
+	
 }
 
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*进行坐标变换后再绘点*/
@@ -169,3 +165,28 @@ void display_Frequence(float val)
 	LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
 }
 
+void display_Gain(double g)
+{
+	POINT_COLOR = WHITE;
+	u32 temp = g * 100;
+	u8 s[11] = {(u8)'G',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'\0'};
+	s[2] = (temp/1000==0)?' ':temp/1000+'0';
+	temp %=1000;
+	s[3] = temp/100+'0';
+	temp %=100;	
+	s[5] = temp / 10 +'0';
+	s[6] = temp % 10 +'0';	
+	LCD_ShowString(Gain_XPos,Gain_YPos,66,12,12,s);
+}
+
+void display_PeakValue()
+{
+	POINT_COLOR = WHITE;
+	u32 temp = peakValue*32.3 /4096 ;
+	u8 s[9] = {(u8)'V',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
+	s[3] = (temp/100==0)?' ':temp/100+'0';
+	temp %=100;
+	s[4] = temp/10+'0';
+	s[6] = temp%10 + '0';
+	LCD_ShowString(Peak_XPos,Peak_YPos,66,12,12,s);
+}

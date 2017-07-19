@@ -7,6 +7,7 @@
 #include "dma.h"
 #include "Key.h"
 #include "timer.h"
+#include "control.h"
 #include "dac.h"
 u16 buffer[2048]; //缓存区
 u8 pause = 0;
@@ -14,7 +15,7 @@ extern uint32_t	TIM5CH1_CAPTURE_VAL;	//输入捕获值
 extern u8 count_Update;
 
 int main(void)
-{ 
+ { 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
 	delay_init(168); 
 	uart_init(9600);
@@ -26,7 +27,8 @@ int main(void)
 
 	TIM5_CH1_Cap_Init(0XFFFFFFFF,84-1); //以1Mhz的频率计数
 	
-	Dac1_Set_Vol(1500);//设置DA输出值为1.8V
+	Dac1_Set_Vol(1500);//设置DA输出值为1.5V
+	display_Gain(Control_DAConverdB(1500));
   while(1) 
 	{
 		ADC_DMACmd(ADC1,DISABLE);

@@ -27,6 +27,11 @@
 #define Freq_XPos HoriEdge + 1
 #define Freq_YPos 1
 
+#define Gain_XPos HoriEdge + 1
+#define Gain_YPos Freq_YPos + 13
+
+#define Peak_XPos HoriEdge + 1
+#define Peak_YPos Gain_YPos + 13
 /*刻度显示定义*/
 #define Character_Width 8
 #define XScale_XPos	XBase_Pos						//水平刻度显示位置
@@ -57,4 +62,6 @@ void display_XScale_Cmd(RaisingOrFallingType m);
 void display_XMove_Cmd(LeftOrRightType lr);
 void display_Mode(void);
 void display_Frequence(float val);
+void display_Gain(double g);
+void display_PeakValue(void);
 #endif
