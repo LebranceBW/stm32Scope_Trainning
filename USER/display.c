@@ -165,16 +165,31 @@ void display_XMove_Cmd(LeftOrRightType lr)
 
 void display_Frequence(float val)
 {
-	POINT_COLOR = WHITE;
-	u32 temp = val * 100;
-	u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
-	s[2] = (temp/1000==0)?' ':temp/1000+'0';
-	temp %=1000;
-	s[3] = temp/100+'0';
-	temp %=100;	
-	s[5] = temp / 10 +'0';
-	s[6] = temp % 10 +'0';	
-	LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
+	POINT_COLOR = WHITE;	
+	if(val < 100)
+	{
+		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
+		u32 temp = val * 100;
+		s[2] = (temp/1000==0)?' ':temp/1000+'0';
+		temp %=1000;
+		s[3] = temp/100+'0';
+		temp %=100;	
+		s[5] = temp / 10 +'0';
+		s[6] = temp % 10 +'0';	
+		LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
+	}
+	else if(val > 100)
+	{
+		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
+		u32 temp = val * 10;
+		s[2] = (temp/1000==0)?' ':temp/1000+'0';
+		temp %=1000;
+		s[3] = temp/100+'0';
+		temp %=100;	
+		s[4] = temp / 10 +'0';
+		s[6] = temp % 10 +'0';	
+		LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
+	}
 }
 
 void display_Gain(s8 g)

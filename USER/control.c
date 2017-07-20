@@ -1,14 +1,14 @@
 #include "control.h"
-u16 DAOut = 2200;
+u16 DAOut = 499;
 s8 Control_DAConverdB(u16 DAVol_Val)
 {
-	return 40*(2.222 - DAVol_Val/(double)1000)+10; 
+//	return 40*(2.222 - DAVol_Val/(double)1000)+10;
+		return -22.88*(DAVol_Val/(double)1000)+21.42;
 }
 
 double Control_DAConverRate(u16 DAVol_Val)
 {
-	 double g = 40*(2.222 - DAVol_Val/(double)1000)+
-		 10;
+	 double g = -22.88*(DAVol_Val/(double)1000)+21.42;
 	 return pow(10,g/10);
 }
  
@@ -31,7 +31,7 @@ void Control_Init()
 
 void Control_IncInput()
 {
-	if(DAOut > 1400)
+	if(DAOut > 100)
 	{
 		DAOut -= 10;
 		Dac1_Set_Vol(DAOut);
@@ -41,7 +41,7 @@ void Control_IncInput()
 }
 void Control_DecInput()
 {
-	if(DAOut < 2800)
+	if(DAOut < 2500)
 	{
 		DAOut += 10;
 		Dac1_Set_Vol(DAOut);
