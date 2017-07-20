@@ -3,9 +3,11 @@ u16 stepsRange[] = {1,2,5,10,20,50,100,200,500};
 u8 stepIndex = 0;
 u16 xBase = 0; 
 u8 moveFlag = 0;
-
+u16 displayBuffer[Hori_Length];
 u16 peakValue = 0;
+u16 valleyValue = 0;
 
+u16 pointCache;
 void display_Init()
 {
 	LCD_Init();           //³õÊ¼»¯LCD FSMC½Ó¿Ú
@@ -26,19 +28,26 @@ void display_Init()
 void display_DrawWave(u16 *a,u16 length)
 {
 	peakValue = 0; //·åÖµ
-	
+	valleyValue = a[0];
 	
 	display_ClearArea();
 	display_DrawAxis();
 	u16 step = stepsRange[stepIndex];
-	for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
-	{
-		u16 temp = a[i*step+xBase];
-		if(temp >= peakValue) 
-				peakValue = temp;
-		display_DrawDotWithCoordinate(i,a[i*step+xBase]);
-	}
+//	while(i<Hori_Length)
+//	{
+		for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
+		{
+			u16 temp = a[i*step+xBase];
+			if(temp >= peakValue) 
+					peakValue = temp;
+			else if(temp <=valleyValue)
+					valleyValue = temp;
+			displayBuffer[i] = temp;
+			display_DrawDotWithCoordinate(i,temp);
+		}
+//	}
 	display_PeakValue();
+	display_PeakToPeakValue();
 	
 }
 
@@ -47,8 +56,11 @@ void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*½øÐÐ×ø±ê±ä»
 	u16 XPose = coordinateX + XBase_Pos;
 	u16 YPose = YBase_Pos - (u8)((int)coordinateY*Veri_Length/ 0xFFF);
 	POINT_COLOR = WAVECOLOR;
-	if((XPose <Hori_Length) &&(YPose <Veri_Length))
-	LCD_DrawPoint(XPose,YPose);
+	if(coordinateX == 0)
+		LCD_DrawPoint(XPose,YPose);
+	else if((XPose <Hori_Length) &&(YPose <Veri_Length))
+		LCD_DrawLine(XPose - 1,pointCache,XPose,YPose);
+	pointCache = YPose;
 }
 
 void display_DrawAxis() /*»æÖÆ×ø±êÖáÓë·Ö¸îÏß*/
@@ -119,14 +131,14 @@ void display_Mode()
 			LCD_ShowString(Mode_XPos,Mode_YPos,64,16,16,(u8*)"Moving ");
 }
 
-void display_XScale_Cmd(RaisingOrFallingType m) //²½³¤±ä»»
+void display_XScale_Cmd(Zoom_Type m) //²½³¤±ä»»
 {
-	if(m == Raising)
+	if(m == Out)
 	{
 		if(stepIndex < 8)
 		stepIndex++;
 	}
-	else if(m == Falling)
+	else if(m == In)
 	{
 		if(stepIndex > 0)
 		stepIndex--;
@@ -165,28 +177,42 @@ void display_Frequence(float val)
 	LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
 }
 
-void display_Gain(double g)
+void display_Gain(s8 g)
 {
 	POINT_COLOR = WHITE;
-	u32 temp = g * 100;
-	u8 s[11] = {(u8)'G',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'\0'};
-	s[2] = (temp/1000==0)?' ':temp/1000+'0';
-	temp %=1000;
-	s[3] = temp/100+'0';
-	temp %=100;	
-	s[5] = temp / 10 +'0';
-	s[6] = temp % 10 +'0';	
+	u8 s[11] = {(u8)'G',(u8)':',(u8)' ',(u8)'0',(u8)'0',(u8)'0',(u8)'d',(u8)'B',(u8)'\0'};
+	if(g<0)
+	{
+		g = -g;
+		s[2] = '-';
+	}
+	s[3] = g/100>0?g/100+'0':' ';
+	g %= 100;
+	s[4] = g/10>0?g/10+'0':' ';
+	s[5] = g%10 + '0';
 	LCD_ShowString(Gain_XPos,Gain_YPos,66,12,12,s);
 }
 
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	u32 temp = peakValue*32.3 /4096 ;
+	u32 temp = peakValue*32.4 /4096 ;
 	u8 s[9] = {(u8)'V',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[3] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;
 	s[4] = temp/10+'0';
 	s[6] = temp%10 + '0';
 	LCD_ShowString(Peak_XPos,Peak_YPos,66,12,12,s);
+}
+
+void display_PeakToPeakValue()
+{
+	POINT_COLOR = WHITE;
+	u32 temp = (peakValue-valleyValue)*32.4 /4096 ;
+	u8 s[11] = {(u8)'V',(u8)'p',(u8)'-',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
+	s[5] = (temp/100==0)?' ':temp/100+'0';
+	temp %=100;
+	s[6] = temp/10+'0';
+	s[8] = temp%10 + '0';
+	LCD_ShowString(PeakToPeak_XPos,PeakToPeak_YPos,66,12,12,s);
 }

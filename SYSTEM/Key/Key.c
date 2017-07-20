@@ -66,7 +66,7 @@ void EXTI1_IRQHandler(void) // ×ó¼ü
 	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1))
 	{
-		if(!moveFlag)display_XScale_Cmd(Falling);
+		if(!moveFlag)display_XScale_Cmd(In);
 		else display_XMove_Cmd(Left);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1));
 	}
@@ -77,7 +77,7 @@ void EXTI2_IRQHandler(void) //ÓÒ¼ü
 	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_2))
 	{
-		if(!moveFlag)display_XScale_Cmd(Raising);
+		if(!moveFlag)display_XScale_Cmd(Out);
 		else display_XMove_Cmd(Right);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_2));
 	}

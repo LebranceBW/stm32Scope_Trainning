@@ -3,6 +3,7 @@
 
 #include "lcd.h"
 #include "sys.h"
+#include "delay.h"
 /*颜色搭配*/
 #define BACKGROUNDCOLOR 0x0000
 #define EDGELINECOLOR  0X01CF
@@ -24,14 +25,20 @@
 #define Veri_Length (VeriDiv* DivLength)	//纵轴长
 
 /*参数显示相关的定义*/
-#define Freq_XPos HoriEdge + 1
-#define Freq_YPos 1
+#define Parameter_XBase HoriEdge + 1
+#define Parameter_YBase(x) 1 + x*13
 
-#define Gain_XPos HoriEdge + 1
-#define Gain_YPos Freq_YPos + 13
+#define Freq_XPos Parameter_XBase
+#define Freq_YPos Parameter_YBase(0)
 
-#define Peak_XPos HoriEdge + 1
-#define Peak_YPos Gain_YPos + 13
+#define Gain_XPos Parameter_XBase
+#define Gain_YPos Parameter_YBase(1)
+
+#define Peak_XPos Parameter_XBase
+#define Peak_YPos Parameter_YBase(2)
+
+#define PeakToPeak_XPos Parameter_XBase
+#define PeakToPeak_YPos Parameter_YBase(3)
 /*刻度显示定义*/
 #define Character_Width 8
 #define XScale_XPos	XBase_Pos						//水平刻度显示位置
@@ -42,11 +49,11 @@
 /*模式显示定义*/
 #define Mode_XPos (YScale_XPos+Character_Width*12)
 #define Mode_YPos (XScale_YPos)
-enum RaisingOrFalling {Raising,Falling};
+enum ZoomType {Out,In};
 enum LeftOrRight {Left,Right};
 
 typedef enum LeftOrRight LeftOrRightType;
-typedef enum RaisingOrFalling RaisingOrFallingType;
+typedef enum ZoomType Zoom_Type;
 
 extern u16 buffer[2048];
 
@@ -58,10 +65,11 @@ void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY); /*进行坐标变
 void display_DrawWave(u16 *a,u16 length);
 void display_XScale(void);
 void display_YScale(void);
-void display_XScale_Cmd(RaisingOrFallingType m);
+void display_XScale_Cmd(Zoom_Type m);
 void display_XMove_Cmd(LeftOrRightType lr);
 void display_Mode(void);
 void display_Frequence(float val);
-void display_Gain(double g);
+void display_Gain(s8);
 void display_PeakValue(void);
+void display_PeakToPeakValue(void);
 #endif
