@@ -18,7 +18,7 @@ IsSuitable_Type Control_NeedToAdjust(u16 peakValue,u16 valleyValue)
 {
 		if((peakValue >= 0xFFF * 0.85) || (valleyValue <= 0xFFF * 0.15))
 			return Large;
-		else if((peakValue <= 0xFFF * 0.6) || (valleyValue >= 0xFFF * 0.4))
+		else if((peakValue <= 0xFFF * 0.65) || (valleyValue >= 0xFFF * 0.35))
 			return Small;
 		else
 			return OK;
@@ -33,7 +33,7 @@ void Control_Init()
 
 void Control_IncInput()
 {
-	if(DAOut > 100)
+	if(DAOut > 0)
 	{
 		DAOut -= 10;
 		Dac1_Set_Vol(DAOut);
@@ -43,7 +43,7 @@ void Control_IncInput()
 }
 void Control_DecInput()
 {
-	if(DAOut < 2500)
+	if(DAOut < 2000)
 	{
 		DAOut += 10;
 		Dac1_Set_Vol(DAOut);

@@ -21,7 +21,7 @@ void Key_EXTI_Init()
 {
 	EXTI_InitTypeDef EXTI_InitStruct = 
 	{
-		.EXTI_Line = EXTI_Line0|EXTI_Line1|EXTI_Line2|EXTI_Line3|EXTI_Line4|EXTI_Line5,
+		.EXTI_Line = EXTI_Line0|EXTI_Line1|EXTI_Line2|EXTI_Line3|EXTI_Line4|EXTI_Line5|EXTI_Line6,
 		.EXTI_LineCmd = ENABLE,
 		.EXTI_Mode = EXTI_Mode_Interrupt,
 		.EXTI_Trigger = EXTI_Trigger_Falling
@@ -106,7 +106,7 @@ void EXTI9_5_IRQHandler(void) //确认 暂时用作暂停功能
 		pause = !pause;
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_5));
 	}
-	else if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6))
+	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6))
 	{
 		attenuation = !attenuation;
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6));

@@ -205,7 +205,7 @@ void display_Gain(s8 g)
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = peakValue * (float)32.4 / (float)4096;
+	float temp1 = (peakValue-0x7FF)*(float)32.4 / (float)4096;
 	
 	temp1 = (attenuation == 0?temp1 * 2:temp1*20)/Control_DAConverRate();
 	int temp = (int)(temp1 * 10);
