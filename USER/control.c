@@ -8,14 +8,14 @@ s8 Control_DAConverdB()
 
 double Control_DAConverRate()
 {
-	 double g = -22.88*(DAOut/(double)1000)+21.42;
-	 double temp = pow(10,g/10);
+	 double g = (-22.88*(DAOut/(double)1000)+21.42)/10;
+	 double temp = pow(10,g);
 	 return temp;
 }
  
 IsSuitable_Type Control_NeedToAdjust(u16 peakValue,u16 valleyValue)
 {
-		if((peakValue >= 0xFFF * 0.8) || (valleyValue <= 0xFFF * 0.2))
+		if((peakValue >= 0xFFF * 0.85) || (valleyValue <= 0xFFF * 0.15))
 			return Large;
 		else if((peakValue <= 0xFFF * 0.6) || (valleyValue >= 0xFFF * 0.4))
 			return Small;

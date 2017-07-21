@@ -4,7 +4,7 @@
 #define CONTROL__H__
 
 #include "sys.h"
-#include "arm_math.h"
+#include "math.h"
 #include "dac.h"
 #include "display.h"
 

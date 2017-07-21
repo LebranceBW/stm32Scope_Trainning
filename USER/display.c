@@ -3,7 +3,6 @@ u16 stepsRange[] = {1,2,5,10,20,50,100,200,500};
 u8 stepIndex = 0;
 u16 xBase = 0; 
 u8 moveFlag = 0;
-u16 displayBuffer[Hori_Length];
 u16 peakValue = 0;
 u16 valleyValue = 0;
 u8 attenuation = 0 ; //0表示两倍衰减，1表示二十倍衰减
@@ -29,12 +28,10 @@ void display_DrawWave(u16 *a,u16 length)
 {
 	peakValue = 0; //峰值
 	valleyValue = a[0];
-	
+	2
 	display_ClearArea();
 	display_DrawAxis();
 	u16 step = stepsRange[stepIndex];
-//	while(i<Hori_Length)
-//	{
 		for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
 		{
 			u16 temp = a[i*step+xBase];
@@ -42,10 +39,8 @@ void display_DrawWave(u16 *a,u16 length)
 					peakValue = temp;
 			else if(temp <=valleyValue)
 					valleyValue = temp;
-			displayBuffer[i] = temp;
 			display_DrawDotWithCoordinate(i,temp);
 		}
-//	}
 	display_PeakValue();
 	display_PeakToPeakValue();
 	
