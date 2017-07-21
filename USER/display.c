@@ -28,7 +28,6 @@ void display_DrawWave(u16 *a,u16 length)
 {
 	peakValue = 0; //·åÖµ
 	valleyValue = a[0];
-	2
 	display_ClearArea();
 	display_DrawAxis();
 	u16 step = stepsRange[stepIndex];
@@ -206,7 +205,7 @@ void display_Gain(s8 g)
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	double temp1 = peakValue * 32.4 / 4096;
+	float temp1 = peakValue * (float)32.4 / (float)4096;
 	
 	temp1 = (attenuation == 0?temp1 * 2:temp1*20)/Control_DAConverRate();
 	int temp = (int)(temp1 * 10);
@@ -221,7 +220,7 @@ void display_PeakValue()
 void display_PeakToPeakValue()
 {
 	POINT_COLOR = WHITE;
-	double temp1 = (peakValue-valleyValue)*32.4 /4096 ;
+	float temp1 = (peakValue-valleyValue)*(float)32.4 /(float)4096 ;
 	temp1 = (attenuation == 0?temp1*2:temp1*20)/Control_DAConverRate();
 	u8 temp = (u8)(temp1 * 10);
 	u8 s[11] = {(u8)'V',(u8)'p',(u8)'-',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};

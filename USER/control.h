@@ -11,7 +11,7 @@
 enum IsSuitable { OK = 0,Small = 1,Large = 2};
 typedef enum IsSuitable IsSuitable_Type;
 
-double Control_DAConverRate(void);
+float Control_DAConverRate(void);
 s8 Control_DAConverdB(void);
 IsSuitable_Type Control_NeedToAdjust(u16 peakValue,u16 valleyValue);
 void Control_Init(void);

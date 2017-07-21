@@ -31,7 +31,7 @@ int main(void)
 	TIM5_CH1_Cap_Init(0XFFFFFFFF,84-1); //以1Mhz的频率计数
 	
 	
-
+	
   while(1) 
 	{
 		ADC_DMACmd(ADC1,DISABLE);

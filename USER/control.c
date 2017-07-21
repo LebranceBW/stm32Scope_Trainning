@@ -6,10 +6,11 @@ s8 Control_DAConverdB()
 		return -22.88*(DAOut/(double)1000)+21.42;
 }
 
-double Control_DAConverRate()
+float Control_DAConverRate()
 {
-	 double g = (-22.88*(DAOut/(double)1000)+21.42)/10;
-	 double temp = pow(10,g);
+	 float x = (DAOut/(float)1000);
+	 float g = ((float)-22.88*x+(float)21.42)/(float)10;
+	 float temp = pow(10,g);
 	 return temp;
 }
  
