@@ -6,7 +6,7 @@ u8 moveFlag = 0;
 u16 displayBuffer[Hori_Length];
 u16 peakValue = 0;
 u16 valleyValue = 0;
-
+u8 attenuation = 0 ; //0表示两倍衰减，1表示二十倍衰减
 u16 pointCache;
 void display_Init()
 {
@@ -211,7 +211,10 @@ void display_Gain(s8 g)
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	u32 temp = peakValue*32.4 /4096 ;
+	double temp1 = peakValue * 32.4 / 4096;
+	
+	temp1 = (attenuation == 0?temp1 * 2:temp1*20)/Control_DAConverRate();
+	int temp = (int)(temp1 * 10);
 	u8 s[9] = {(u8)'V',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[3] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;
@@ -223,7 +226,9 @@ void display_PeakValue()
 void display_PeakToPeakValue()
 {
 	POINT_COLOR = WHITE;
-	u32 temp = (peakValue-valleyValue)*32.4 /4096 ;
+	double temp1 = (peakValue-valleyValue)*32.4 /4096 ;
+	temp1 = (attenuation == 0?temp1*2:temp1*20)/Control_DAConverRate();
+	u8 temp = (u8)(temp1 * 10);
 	u8 s[11] = {(u8)'V',(u8)'p',(u8)'-',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[5] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;

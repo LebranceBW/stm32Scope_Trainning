@@ -1,20 +1,21 @@
 #include "control.h"
 u16 DAOut = 499;
-s8 Control_DAConverdB(u16 DAVol_Val)
+s8 Control_DAConverdB()
 {
 //	return 40*(2.222 - DAVol_Val/(double)1000)+10;
-		return -22.88*(DAVol_Val/(double)1000)+21.42;
+		return -22.88*(DAOut/(double)1000)+21.42;
 }
 
-double Control_DAConverRate(u16 DAVol_Val)
+double Control_DAConverRate()
 {
-	 double g = -22.88*(DAVol_Val/(double)1000)+21.42;
-	 return pow(10,g/10);
+	 double g = -22.88*(DAOut/(double)1000)+21.42;
+	 double temp = pow(10,g/10);
+	 return temp;
 }
  
 IsSuitable_Type Control_NeedToAdjust(u16 peakValue,u16 valleyValue)
 {
-		if((peakValue >= 0xFFF * 0.9) || (valleyValue <= 0xFFF * 0.05))
+		if((peakValue >= 0xFFF * 0.8) || (valleyValue <= 0xFFF * 0.2))
 			return Large;
 		else if((peakValue <= 0xFFF * 0.6) || (valleyValue >= 0xFFF * 0.4))
 			return Small;
@@ -26,7 +27,7 @@ void Control_Init()
 {
 	Dac1_Init();
 	Dac1_Set_Vol(DAOut);//设置DA输出值为2.2V初始化放大倍数为0
-	display_Gain(Control_DAConverdB(DAOut));
+	display_Gain(Control_DAConverdB());
 }
 
 void Control_IncInput()
@@ -35,7 +36,7 @@ void Control_IncInput()
 	{
 		DAOut -= 10;
 		Dac1_Set_Vol(DAOut);
-		display_Gain(Control_DAConverdB(DAOut));
+		display_Gain(Control_DAConverdB());
 
 	}
 }
@@ -45,6 +46,6 @@ void Control_DecInput()
 	{
 		DAOut += 10;
 		Dac1_Set_Vol(DAOut);
-		display_Gain(Control_DAConverdB(DAOut));
+		display_Gain(Control_DAConverdB());
 	}
 }

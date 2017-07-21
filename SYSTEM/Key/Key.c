@@ -10,7 +10,7 @@ void Key_GPIOF_Init()
 	GPIO_InitTypeDef GPIO_InitStruct = 
 	{
 			.GPIO_Mode = GPIO_Mode_IN,
-			.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5,
+			.GPIO_Pin = GPIO_Pin_0|GPIO_Pin_1|GPIO_Pin_2|GPIO_Pin_3|GPIO_Pin_4|GPIO_Pin_5|GPIO_Pin_6,
 			.GPIO_PuPd = GPIO_PuPd_UP,
 			.GPIO_Speed = GPIO_Speed_2MHz 
 	};
@@ -33,6 +33,7 @@ void Key_EXTI_Init()
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOF,GPIO_PinSource3); 
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOF,GPIO_PinSource4); 
 	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOF,GPIO_PinSource5); 
+	SYSCFG_EXTILineConfig(EXTI_PortSourceGPIOF,GPIO_PinSource6); 
 	
 }
 
@@ -104,6 +105,11 @@ void EXTI9_5_IRQHandler(void) //确认 暂时用作暂停功能
 	{
 		pause = !pause;
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_5));
+	}
+	else if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6))
+	{
+		attenuation = !attenuation;
+		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line5);
 }

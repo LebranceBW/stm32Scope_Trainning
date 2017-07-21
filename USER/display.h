@@ -4,6 +4,7 @@
 #include "lcd.h"
 #include "sys.h"
 #include "delay.h"
+#include "control.h"
 /*—’…´¥Ó≈‰*/
 #define BACKGROUNDCOLOR 0x0000
 #define EDGELINECOLOR  0X01CF
