@@ -2,14 +2,16 @@
 u16 DAOut = 499;
 s8 Control_DAConverdB()
 {
-//	return 40*(2.222 - DAVol_Val/(double)1000)+10;
-		return -22.88*(DAOut/(double)1000)+21.42;
+	return -22.88*DAOut/(double)1000 + 21.424;
+//		return 40*(0.97 - DAOut/(double)1000) + 10;
+	
 }
 
 float Control_DAConverRate()
 {
 	 float x = (DAOut/(float)1000);
-	 float g = ((float)-22.88*x+(float)21.42)/(float)10;
+//	 float g = 4 * (0.97 - x) + 1;
+		float g =  -2.288*x + 2.1424;
 	 float temp = pow(10,g);
 	 return temp;
 }
