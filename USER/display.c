@@ -1,5 +1,6 @@
 #include "display.h"
 u16 stepsRange[] = {1,2,5,10,20,50,100,200,500};
+
 u8 stepIndex = 0;
 u16 xBase = 0; 
 u8 moveFlag = 0;
@@ -26,6 +27,9 @@ void display_Init()
 
 void display_DrawWave(u16 *a,u16 length)
 {
+//	static u8 count;
+//	u16 peakTemp = a[0];
+//	u16 valleyTemp = a[0];
 	peakValue = 0; //峰值
 	valleyValue = a[0];
 	display_ClearArea();
@@ -35,14 +39,23 @@ void display_DrawWave(u16 *a,u16 length)
 		{
 			u16 temp = a[i*step+xBase];
 			if(temp >= peakValue) 
-					peakValue = temp;
+//					peakTemp = temp;
+						peakValue = temp;
 			else if(temp <=valleyValue)
-					valleyValue = temp;
+//					valleyTemp = temp;
+						valleyValue = temp;
 			display_DrawDotWithCoordinate(i,temp);
 		}
-	display_PeakValue();
-	display_PeakToPeakValue();
-	
+//	peakValue += peakTemp;
+//	valleyValue += valleyTemp;
+//	count ++ ;
+//	if(count == 5)
+//	{
+//		peakValue /= 5;
+//		valleyValue /= 5;
+		display_PeakValue();
+		display_PeakToPeakValue();
+//	}
 }
 
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*进行坐标变换后再绘点*/
@@ -205,10 +218,15 @@ void display_Gain(s8 g)
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = (peakValue-0x7FF)*(float)32.4 / (float)4096;
+	float temp1 = (peakValue-0x6BB)*(float)3.24 / (float)0xD76;
 	
-	temp1 = (attenuation == 0?temp1 * 2:temp1*20)/Control_DAConverRate();
-	int temp = (int)(temp1 * 10);
+	temp1 = temp1*2/Control_DAConverRate();
+//		u16 temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10; //两倍指数拟合后的修正公式
+	u16 temp = 0;
+	if(!attenuation) 
+		temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10;
+	else temp = (1.490 *(float)temp1*(float)temp1+2.099*(float)temp1 +1.876)*10;
+//	u8 temp = temp1;
 	u8 s[9] = {(u8)'V',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[3] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;
@@ -220,9 +238,14 @@ void display_PeakValue()
 void display_PeakToPeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = (peakValue-valleyValue)*(float)32.4 /(float)4096 ;
-	temp1 = (attenuation == 0?temp1*2:temp1*20)/Control_DAConverRate();
-	u8 temp = (u8)(temp1 * 10);
+	float temp1 = (peakValue-valleyValue + 0x012)*(float)3.24 /(float)0xD76 ;
+	temp1 = temp1*2/Control_DAConverRate();
+	u16 temp = 0;
+	if(!attenuation) 
+		temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10;
+	else temp = (1.490 *(float)temp1*(float)temp1+2.099*(float)temp1 +1.876)*10;
+//	u16 temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10; //两倍衰减指数拟合后的修正公式
+//	u8 temp = temp1;
 	u8 s[11] = {(u8)'V',(u8)'p',(u8)'-',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[5] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;
