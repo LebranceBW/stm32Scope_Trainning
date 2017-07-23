@@ -56,7 +56,7 @@ enum LeftOrRight {Left,Right};
 typedef enum LeftOrRight LeftOrRightType;
 typedef enum ZoomType Zoom_Type;
 
-extern u16 buffer[2048];
+extern u16 buffer[4096];
 
 void display_Init(void);
 //void measureDisplay(float val);
@@ -73,4 +73,5 @@ void display_Frequence(float val);
 void display_Gain(s8);
 void display_PeakValue(void);
 void display_PeakToPeakValue(void);
+void display_DrawWavePoint(void);
 #endif

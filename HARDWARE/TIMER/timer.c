@@ -118,7 +118,7 @@ void TIM5_IRQHandler(void)
 { 		    
 		if(TIM_GetITStatus(TIM5, TIM_IT_CC1) == SET)//捕获1发生捕获事件
 		{	
-				if(rasingEdge_Captured_Count == 1)
+				if(rasingEdge_Captured_Count == 9)
 				{				
 					  rasingEdge_Captured_Count = 0;
 						count_Update = 1;

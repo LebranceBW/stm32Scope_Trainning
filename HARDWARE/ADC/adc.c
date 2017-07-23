@@ -12,7 +12,8 @@ void  Adc_Init(void)
 	ADC_CommonInitTypeDef ADC_CommonInitStructure;
 	ADC_InitTypeDef       ADC_InitStructure;
 	
-//	RCC_PCLK2Config(RCC_HCLK_Div1);
+	RCC_HCLKConfig(RCC_SYSCLK_Div1);
+	RCC_PCLK2Config(RCC_HCLK_Div1);
   RCC_AHB1PeriphClockCmd(RCC_AHB1Periph_GPIOA, ENABLE);//使能GPIOA时钟
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_ADC1, ENABLE); //使能ADC1时钟
 
@@ -26,7 +27,7 @@ void  Adc_Init(void)
   ADC_CommonInitStructure.ADC_Mode = ADC_Mode_Independent;//独立模式
   ADC_CommonInitStructure.ADC_TwoSamplingDelay = ADC_TwoSamplingDelay_5Cycles;//两个采样阶段之间的延迟5个时钟
   ADC_CommonInitStructure.ADC_DMAAccessMode = ADC_DMAAccessMode_Disabled ; //DMA失能
-  ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div2;//预分频4分频。ADCCLK=PCLK2/4=84/4=21Mhz,ADC时钟最好不要超过36Mhz 
+  ADC_CommonInitStructure.ADC_Prescaler = ADC_Prescaler_Div4;//预分频4分频。ADCCLK=PCLK2/4=84/4=21Mhz,ADC时钟最好不要超过36Mhz 
   ADC_CommonInit(&ADC_CommonInitStructure);//初始化
 	
   ADC_InitStructure.ADC_Resolution = ADC_Resolution_12b;//12位模式
@@ -40,7 +41,7 @@ void  Adc_Init(void)
   ADC_Init(ADC1, &ADC_InitStructure);//ADC初始化
 	ADC_ITConfig(ADC1,ADC_IT_EOC,DISABLE); //关EOC
 	ADC_Cmd(ADC1, ENABLE);//开启AD转换器	
-	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_56Cycles );
+	ADC_RegularChannelConfig(ADC1, ADC_Channel_5, 1, ADC_SampleTime_112Cycles );
 	ADC_DMARequestAfterLastTransferCmd(ADC1,ENABLE);
 	
 	ADC_DMACmd(ADC1,ENABLE);

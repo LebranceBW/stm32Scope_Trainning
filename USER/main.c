@@ -9,12 +9,13 @@
 #include "timer.h"
 #include "control.h"
 #include "dac.h"
-u16 buffer[2048]; //缓存区
+u16 buffer[4096]; //缓存区
 u8 pause = 0;
 extern uint32_t	TIM5CH1_CAPTURE_VAL;	//输入捕获值  
 extern u8 count_Update;
 extern u16 peakValue;
 extern u16 valleyValue;
+extern u16 points[250];
 
 IsSuitable_Type isSuit;
 int main(void)
@@ -23,7 +24,7 @@ int main(void)
 	delay_init(168); 
 	uart_init(9600);
 	display_Init();
-	DMA_ADCToMemory_Init((u32)buffer,2048);
+	DMA_ADCToMemory_Init((u32)buffer,4096);
 	Adc_Init();
 	Key_Init();
 	Control_Init();
@@ -38,21 +39,22 @@ int main(void)
 		DMA_Cmd(DMA2_Stream0, DISABLE);
 		if(count_Update)        //成功捕获到了一次高电平
 		{
-			float temp = 16000 / (float)TIM5CH1_CAPTURE_VAL;
+			float temp = 80000 / (float)TIM5CH1_CAPTURE_VAL;
 			display_Frequence(temp);
 			count_Update = 0;		     //开启下一次捕获
 		}
 		if(!pause)
 		{	
-			
-			display_DrawWave(buffer,2048);
+			while(!DMA_GetCurrDataCounter(DMA2_Stream0));
+			display_DrawWave(buffer,4096);
+			display_DrawWavePoint();
 			DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TEIF0);
 			DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
 			DMA_Cmd(DMA2_Stream0,ENABLE);
 			ADC_ClearFlag(ADC1,ADC_FLAG_OVR);
 			ADC_DMACmd(ADC1,ENABLE);
 			ADC_SoftwareStartConv(ADC1);			
-			delay_ms(1);
+			delay_ms(10);
 		}
 		IsSuitable_Type isSuit = Control_NeedToAdjust(peakValue,valleyValue);
 		if(isSuit!= OK)//

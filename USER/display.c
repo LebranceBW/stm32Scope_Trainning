@@ -7,7 +7,11 @@ u8 moveFlag = 0;
 u16 peakValue = 0;
 u16 valleyValue = 0;
 u8 attenuation = 0 ; //0±íÊ¾Á½±¶Ë¥¼õ£¬1±íÊ¾¶þÊ®±¶Ë¥¼õ
+u16 points[Hori_Length];
 u16 pointCache;
+u16 pointXCache;
+u8 trigger = 0;
+u8 graphIndex = 0;
 void display_Init()
 {
 	LCD_Init();           //³õÊ¼»¯LCD FSMC½Ó¿Ú
@@ -24,39 +28,73 @@ void display_Init()
 	display_XScale();
 	display_YScale();
 }
-
+void display_DrawWavePoint()
+{
+	if(graphIndex == 250)
+	{
+		for(int i = 0;i<Hori_Length;i++)
+		{
+//			if(points[i])
+				display_DrawDotWithCoordinate(i,points[i]);
+//			else
+//				 continue;
+			if(points[i] >= peakValue) 
+						peakValue = points[i];
+			else if(points[i] <=valleyValue)
+						valleyValue = points[i];
+		}
+		display_PeakValue();
+		display_PeakToPeakValue();
+		graphIndex = 0;
+	}
+}
 void display_DrawWave(u16 *a,u16 length)
 {
-//	static u8 count;
-//	u16 peakTemp = a[0];
-//	u16 valleyTemp = a[0];
 	peakValue = 0; //·åÖµ
 	valleyValue = a[0];
 	display_ClearArea();
 	display_DrawAxis();
 	u16 step = stepsRange[stepIndex];
-		for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
-		{
-			u16 temp = a[i*step+xBase];
-			if(temp >= peakValue) 
-//					peakTemp = temp;
-						peakValue = temp;
-			else if(temp <=valleyValue)
-//					valleyTemp = temp;
-						valleyValue = temp;
-			display_DrawDotWithCoordinate(i,temp);
-		}
-//	peakValue += peakTemp;
-//	valleyValue += valleyTemp;
-//	count ++ ;
-//	if(count == 5)
-//	{
-//		peakValue /= 5;
-//		valleyValue /= 5;
-		display_PeakValue();
-		display_PeakToPeakValue();
-//	}
-}
+	trigger = 0;
+	if(graphIndex == 0)
+		for(int i =0;i<length;i++)
+			{
+				if(a[i] < 0x7FF && a[i+1] >0x7FF)
+				{
+						trigger = i;
+						break;
+				}
+				else
+					continue;
+			}
+	for(int i = trigger;i<length;i++)
+	{
+				points[graphIndex++] = a[i*step+ xBase];
+//				
+//				
+//				if(graphIndex == 250)
+//					break;
+//				points[graphIndex++] = 0;
+//				if(graphIndex == 250)
+//					break;
+//				points[graphIndex++] = 0;
+				if(graphIndex == 250)
+					break;
+	}
+		
+}	
+//for(int i = 0;(i<Hori_Length)&&(i*step+xBase<length);i++)
+//		{
+//			u16 temp = a[i*step+xBase];
+//			if(temp >= peakValue) 
+//						peakValue = temp;
+//			else if(temp <=valleyValue)
+//						valleyValue = temp;
+//			points[i] = temp;
+//		}
+//		display_PeakValue();
+//		display_PeakToPeakValue();
+//}
 
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*½øÐÐ×ø±ê±ä»»ºóÔÙ»æµã*/
 {
@@ -66,7 +104,7 @@ void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*½øÐÐ×ø±ê±ä»
 	if(coordinateX == 0)
 		LCD_DrawPoint(XPose,YPose);
 	else if((XPose <Hori_Length) &&(YPose <Veri_Length))
-		LCD_DrawLine(XPose - 1,pointCache,XPose,YPose);
+		LCD_DrawLine(XPose-1,pointCache,XPose,YPose);
 	pointCache = YPose;
 }
 
