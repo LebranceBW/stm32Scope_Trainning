@@ -47,7 +47,8 @@
 #define XScale_YPos VeriEdge + 2
 #define YScale_XPos	(XScale_XPos + Character_Width*12)					//垂直刻度显示位置
 #define YScale_YPos XScale_YPos
-
+#define Atten_XPos Parameter_XBase
+#define Atten_YPos XScale_YPos
 /*模式显示定义*/
 #define Mode_XPos (YScale_XPos+Character_Width*12)
 #define Mode_YPos (XScale_YPos)
@@ -77,4 +78,5 @@ void display_Gain(s8);
 void display_PeakValue(void);
 void display_PeakToPeakValue(void);
 void display_DrawWavePoint(void);
+void display_Attenuation(void);
 #endif

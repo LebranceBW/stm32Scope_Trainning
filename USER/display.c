@@ -28,6 +28,7 @@ void display_Init()
 	display_Mode();
 	display_XScale();
 	display_YScale();
+	display_Attenuation();
 }
 void display_DrawWavePoint()
 {
@@ -299,4 +300,11 @@ void display_YMove_Cmd(TopOrBottomType tb)
 	display_Mode();
 }
 
-
+void display_Attenuation()
+{
+	POINT_COLOR = WHITE;
+	u8 s[] = "Atten:X2 ";
+	if(attenuation == 1)
+		s[8] = '0';
+	LCD_ShowString(Atten_XPos,Atten_YPos,72,12,12,s);	
+}

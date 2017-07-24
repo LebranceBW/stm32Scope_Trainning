@@ -129,6 +129,7 @@ void EXTI9_5_IRQHandler(void) //确认 暂时用作暂停功能
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6))
 	{
 		attenuation = !attenuation;
+		display_Attenuation();
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line5);
