@@ -35,7 +35,7 @@ void display_DrawWavePoint()
 		for(int i = 0;i<Hori_Length;i++)
 		{
 //			if(points[i])
-				display_DrawDotWithCoordinate(i,points[i]+yBase);
+				display_DrawDotWithCoordinate(i,points[i]);
 //			else
 //				 continue;
 			if(points[i] >= peakValue) 
@@ -54,9 +54,9 @@ void display_DrawWave(u16 *a,u16 length)
 	u16 step = stepsRange[stepIndex];
 	trigger = 0;
 	if(graphIndex == 0)
-		for(int i =0;i<length;i++)
+		for(int i =0;i*step<length;i++)
 			{
-				if(a[i] < 0x7FF && a[i+1] >0x7FF)
+				if(a[i*step] < 0x7FF && a[(i+1)*step] >0x7FF)
 				{
 						trigger = i;
 						break;
@@ -88,13 +88,16 @@ void display_DrawWave(u16 *a,u16 length)
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*进行坐标变换后再绘点*/
 {
 	u16 XPose = coordinateX + XBase_Pos;
-	u16 YPose = YBase_Pos - (u8)((int)coordinateY*Veri_Length/0xFFF);
-	POINT_COLOR = WAVECOLOR;
-	if(coordinateX == 0)
-		LCD_DrawPoint(XPose,YPose);
-	else if((XPose <Hori_Length) &&(YPose <Veri_Length))
-		LCD_DrawLine(XPose-1,pointCache,XPose,YPose);
-	pointCache = YPose;
+	u16 YPose = YBase_Pos - (u8)((int)coordinateY*Veri_Length/0xFFF) - yBase;
+	if((XPose >0)&&(XPose < XBase_Pos +Hori_Length)&&(YPose <YBase_Pos)&&(YPose>YBase_Pos - Veri_Length))
+	{
+		POINT_COLOR = WAVECOLOR;
+		if(coordinateX == 0)
+			LCD_DrawPoint(XPose,YPose);
+		else if((XPose <Hori_Length) &&(YPose <Veri_Length))
+			LCD_DrawLine(XPose-1,pointCache,XPose,YPose);
+		pointCache = YPose;
+	}
 }
 
 void display_DrawAxis() /*绘制坐标轴与分割线*/
@@ -178,7 +181,7 @@ void display_XScale_Cmd(Zoom_Type m) //步长变换
 		stepIndex--;
 	}
 	display_XScale();
-	display_DrawWave(buffer,2048);
+//	display_DrawWave(buffer,2048);
 }
 
 void display_XMove_Cmd(LeftOrRightType lr)
@@ -194,7 +197,7 @@ void display_XMove_Cmd(LeftOrRightType lr)
 		if(xBase >2048) xBase = 2048;
 	}
 	display_Mode();
-	display_DrawWavePoint();
+//	display_DrawWavePoint();
 }
 
 void display_Frequence(float val)
@@ -285,16 +288,15 @@ void display_YMove_Cmd(TopOrBottomType tb)
 {
 	if(tb == Top)
 	{
-		if(xBase >0)
-			yBase -= DivLength;	
+		if(yBase <= 4*DivLength)
+			yBase += 10;	
 	}
 	else if(tb == Bottom)
 	{
-		yBase += DivLength;
-		if(xBase >Veri_Length) xBase = Veri_Length;
+		if(yBase >= -4*DivLength)
+			yBase -= 10;
 	}
 	display_Mode();
-	display_DrawWavePoint();
 }
 
 

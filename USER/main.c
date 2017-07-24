@@ -59,7 +59,7 @@ int main(void)
 			ADC_ClearFlag(ADC1,ADC_FLAG_OVR);
 			ADC_DMACmd(ADC1,ENABLE);
 			ADC_SoftwareStartConv(ADC1);			
-			delay_ms(10);
+			delay_ms(100);
 		}
 		IsSuitable_Type isSuit = Control_NeedToAdjust(peakValue,valleyValue);
 		if(isSuit!= OK)//

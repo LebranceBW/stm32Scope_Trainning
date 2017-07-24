@@ -55,6 +55,8 @@ void Key_NVIC_Init()
 	NVIC_Init(&NVIC_Struct);
 	NVIC_Struct.NVIC_IRQChannel = EXTI0_IRQn;
 	NVIC_Init(&NVIC_Struct);
+	NVIC_Struct.NVIC_IRQChannel = EXTI3_IRQn;
+	NVIC_Init(&NVIC_Struct);
 }
 void Key_Init()
 {
@@ -66,8 +68,8 @@ void EXTI0_IRQHandler(void) //ÉÏ¼ü
 {
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_0))
 	{
-		if(!moveFlag)display_XScale_Cmd(In);
-		else display_XMove_Cmd(Left);
+		if(moveFlag)
+		display_YMove_Cmd(Top);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_0));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0);
@@ -77,9 +79,8 @@ void EXTI1_IRQHandler(void) // ×ó¼ü
 	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1))
 	{
-		if(!moveFlag)
-			;
-		else display_YMove_Cmd(Top);
+		if(!moveFlag)display_XScale_Cmd(In);
+		else display_XMove_Cmd(Left);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line1);
@@ -99,12 +100,11 @@ void EXTI3_IRQHandler(void) //ÏÂ¼ü
 {
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_3))
 	{
-		if(!moveFlag)
-			;
-		else display_YMove_Cmd(Bottom);
+		if(moveFlag)
+			display_YMove_Cmd(Bottom);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_3));
 	}
-	EXTI_ClearITPendingBit(EXTI_Line0);
+	EXTI_ClearITPendingBit(EXTI_Line3);
 }
 void EXTI4_IRQHandler(void) //¸´Î»
 {
