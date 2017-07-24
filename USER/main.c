@@ -16,8 +16,9 @@ extern u8 count_Update;
 extern u16 peakValue;
 extern u16 valleyValue;
 extern u16 points[250];
-
+extern u8 graphIndex;
 IsSuitable_Type isSuit;
+
 int main(void)
  { 
 	NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);//设置系统中断优先级分组2
@@ -47,7 +48,11 @@ int main(void)
 		{	
 			while(!DMA_GetCurrDataCounter(DMA2_Stream0));
 			display_DrawWave(buffer,4096);
-			display_DrawWavePoint();
+			if(graphIndex == 250)
+			{
+				display_DrawWavePoint();
+				graphIndex = 0;
+			}
 			DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TEIF0);
 			DMA_ClearFlag(DMA2_Stream0,DMA_FLAG_TCIF0);
 			DMA_Cmd(DMA2_Stream0,ENABLE);

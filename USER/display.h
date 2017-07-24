@@ -5,6 +5,7 @@
 #include "sys.h"
 #include "delay.h"
 #include "control.h"
+#include "adc.h"
 /*—’…´¥Ó≈‰*/
 #define BACKGROUNDCOLOR 0x0000
 #define EDGELINECOLOR  0X01CF
@@ -52,10 +53,11 @@
 #define Mode_YPos (XScale_YPos)
 enum ZoomType {Out,In};
 enum LeftOrRight {Left,Right};
+enum TopOrBottom {Top,Bottom};
 
 typedef enum LeftOrRight LeftOrRightType;
 typedef enum ZoomType Zoom_Type;
-
+typedef enum TopOrBottom TopOrBottomType;
 extern u16 buffer[4096];
 
 void display_Init(void);
@@ -68,6 +70,7 @@ void display_XScale(void);
 void display_YScale(void);
 void display_XScale_Cmd(Zoom_Type m);
 void display_XMove_Cmd(LeftOrRightType lr);
+void display_YMove_Cmd(TopOrBottomType tb);
 void display_Mode(void);
 void display_Frequence(float val);
 void display_Gain(s8);

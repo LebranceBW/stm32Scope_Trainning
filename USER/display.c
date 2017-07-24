@@ -1,8 +1,9 @@
 #include "display.h"
 u16 stepsRange[] = {1,2,5,10,20,50,100,200,500};
 
-u8 stepIndex = 0;
+u8 stepIndex = 1;
 u16 xBase = 0; 
+s16 yBase = 0;
 u8 moveFlag = 0;
 u16 peakValue = 0;
 u16 valleyValue = 0;
@@ -30,12 +31,11 @@ void display_Init()
 }
 void display_DrawWavePoint()
 {
-	if(graphIndex == 250)
-	{
+	peakValue=valleyValue=points[0];
 		for(int i = 0;i<Hori_Length;i++)
 		{
 //			if(points[i])
-				display_DrawDotWithCoordinate(i,points[i]);
+				display_DrawDotWithCoordinate(i,points[i]+yBase);
 //			else
 //				 continue;
 			if(points[i] >= peakValue) 
@@ -45,8 +45,6 @@ void display_DrawWavePoint()
 		}
 		display_PeakValue();
 		display_PeakToPeakValue();
-		graphIndex = 0;
-	}
 }
 void display_DrawWave(u16 *a,u16 length)
 {
@@ -69,17 +67,9 @@ void display_DrawWave(u16 *a,u16 length)
 			}
 	for(int i = trigger;i<length;i++)
 	{
-				points[graphIndex++] = a[i*step+ xBase];
-//				
-//				
-//				if(graphIndex == 250)
-//					break;
-//				points[graphIndex++] = 0;
-//				if(graphIndex == 250)
-//					break;
-//				points[graphIndex++] = 0;
 				if(graphIndex == 250)
-					break;
+							break;
+				points[graphIndex++] = a[i*step+ xBase];			
 	}
 		
 }	
@@ -99,7 +89,7 @@ void display_DrawWave(u16 *a,u16 length)
 void display_DrawDotWithCoordinate(u8 coordinateX,u16 coordinateY) /*进行坐标变换后再绘点*/
 {
 	u16 XPose = coordinateX + XBase_Pos;
-	u16 YPose = YBase_Pos - (u8)((int)coordinateY*Veri_Length/ 0xFFF);
+	u16 YPose = YBase_Pos - (u8)((int)coordinateY*Veri_Length/0xFFF);
 	POINT_COLOR = WAVECOLOR;
 	if(coordinateX == 0)
 		LCD_DrawPoint(XPose,YPose);
@@ -205,15 +195,15 @@ void display_XMove_Cmd(LeftOrRightType lr)
 		if(xBase >2048) xBase = 2048;
 	}
 	display_Mode();
-	display_DrawWave(buffer,2048);
+	display_DrawWavePoint();
 }
 
 void display_Frequence(float val)
 {
 	POINT_COLOR = WHITE;	
-	if(val < 100)
-	{
 		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
+	if(1<val < 100)
+	{
 		u32 temp = val * 100;
 		s[2] = (temp/1000==0)?' ':temp/1000+'0';
 		temp %=1000;
@@ -225,7 +215,8 @@ void display_Frequence(float val)
 	}
 	else if(val > 100)
 	{
-		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
+//		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
+		s[5] = (u8)'.';
 		u32 temp = val * 10;
 		s[2] = (temp/1000==0)?' ':temp/1000+'0';
 		temp %=1000;
@@ -233,6 +224,17 @@ void display_Frequence(float val)
 		temp %=100;	
 		s[4] = temp / 10 +'0';
 		s[6] = temp % 10 +'0';	
+		LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
+	}
+	else if(val>0)
+	{
+		s[2] =s[3]=s[4]= (u8)' ';
+		s[7] =(u8) '0';
+		u32 temp = val * 1000;
+		s[5] = (temp/100==0)?' ':temp/100+'0';
+		temp %= 100;
+		s[6] = (temp/10==0)?' ':temp / 10 +'0';
+		s[7] = temp % 10 +'0';	
 		LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
 	}
 }
@@ -256,15 +258,9 @@ void display_Gain(s8 g)
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = (peakValue-0x6BB)*(float)3.24 / (float)0xD76;
-	
-	temp1 = temp1*2/Control_DAConverRate();
-//		u16 temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10; //两倍指数拟合后的修正公式
-	u16 temp = 0;
-	if(!attenuation) 
-		temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10;
-	else temp = (1.490 *(float)temp1*(float)temp1+2.099*(float)temp1 +1.876)*10;
-//	u8 temp = temp1;
+	float temp1 = (peakValue-0x7ff)*(float)3.24 / (float)0xFFF;
+//	u8 temp = (peakValue - valleyValue)*10/Control_DAConverRate();
+	u8 temp = temp1;
 	u8 s[9] = {(u8)'V',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[3] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;
@@ -276,13 +272,8 @@ void display_PeakValue()
 void display_PeakToPeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = (peakValue-valleyValue + 0x012)*(float)3.24 /(float)0xD76 ;
-	temp1 = temp1*2/Control_DAConverRate();
-	u16 temp = 0;
-	if(!attenuation) 
-		temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10;
-	else temp = (1.490 *(float)temp1*(float)temp1+2.099*(float)temp1 +1.876)*10;
-//	u16 temp = (0.0623 *(float)temp1*(float)temp1+0.768*(float)temp1 -0.0229)*10; //两倍衰减指数拟合后的修正公式
+	float temp1 = (peakValue-valleyValue)*(float)3.24 /(float)0xFFF ;
+	u8 temp = (peakValue - valleyValue)*10*Control_DAConverRate()/1000;
 //	u8 temp = temp1;
 	u8 s[11] = {(u8)'V',(u8)'p',(u8)'-',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[5] = (temp/100==0)?' ':temp/100+'0';
@@ -291,3 +282,20 @@ void display_PeakToPeakValue()
 	s[8] = temp%10 + '0';
 	LCD_ShowString(PeakToPeak_XPos,PeakToPeak_YPos,66,12,12,s);
 }
+void display_YMove_Cmd(TopOrBottomType tb)
+{
+	if(tb == Top)
+	{
+		if(xBase >0)
+			yBase -= DivLength;	
+	}
+	else if(tb == Bottom)
+	{
+		yBase += DivLength;
+		if(xBase >Veri_Length) xBase = Veri_Length;
+	}
+	display_Mode();
+	display_DrawWavePoint();
+}
+
+

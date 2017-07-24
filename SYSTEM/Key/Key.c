@@ -64,10 +64,10 @@ void Key_Init()
 }
 void EXTI0_IRQHandler(void) //上键
 {
-	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_0))
 	{
-		attenuation = !attenuation;
+		if(!moveFlag)display_XScale_Cmd(In);
+		else display_XMove_Cmd(Left);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_0));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line0);
@@ -77,8 +77,9 @@ void EXTI1_IRQHandler(void) // 左键
 	delay_ms(20);
 	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1))
 	{
-		if(!moveFlag)display_XScale_Cmd(In);
-		else display_XMove_Cmd(Left);
+		if(!moveFlag)
+			;
+		else display_YMove_Cmd(Top);
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_1));
 	}
 	EXTI_ClearITPendingBit(EXTI_Line1);
@@ -95,7 +96,16 @@ void EXTI2_IRQHandler(void) //右键
 	EXTI_ClearITPendingBit(EXTI_Line2);
 }
 void EXTI3_IRQHandler(void) //下键
-{}
+{
+	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_3))
+	{
+		if(!moveFlag)
+			;
+		else display_YMove_Cmd(Bottom);
+		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_3));
+	}
+	EXTI_ClearITPendingBit(EXTI_Line0);
+}
 void EXTI4_IRQHandler(void) //复位
 {
 	delay_ms(20);
@@ -116,7 +126,13 @@ void EXTI9_5_IRQHandler(void) //确认 暂时用作暂停功能
 		pause = !pause;
 		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_5));
 	}
-	
+	if(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6))
+	{
+		attenuation = !attenuation;
+		while(!GPIO_ReadInputDataBit(GPIOF,GPIO_Pin_6));
+	}
+	EXTI_ClearITPendingBit(EXTI_Line5);
+	EXTI_ClearITPendingBit(EXTI_Line6);
 }
 
 	

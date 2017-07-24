@@ -9,13 +9,9 @@ s8 Control_DAConverdB()
 
 float Control_DAConverRate()
 {
-	 float x = (DAOut/(float)1000);
-//	 float g = 4 * (0.97 - x) + 1;
-		float g =  -2.288*x + 2.1424;
-	 float temp = 30.267*pow(2.178,-4.386*x);
-
-//	 float temp = pow(10,g);
-	 return temp;
+		float x = DAOut/100;
+		float temp = 0.1049 * pow(2.718,0.4734*x);
+		return temp;
 }
  
 IsSuitable_Type Control_NeedToAdjust(u16 peakValue,u16 valleyValue)
