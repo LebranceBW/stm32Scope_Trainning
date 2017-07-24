@@ -2,16 +2,19 @@
 u16 DAOut = 499;
 s8 Control_DAConverdB()
 {
-//	return -22.88*DAOut/(double)1000 + 21.424;
-		return 40*(1.01 - DAOut/(double)1000) + 10;
+	return -22.88*DAOut/(double)1000 + 21.424;
+//		return 40*(1.01 - DAOut/(double)1000) + 10;
 	
 }
 
-float Control_DAConverRate()
+double Control_DAConverRate()
 {
-		float x = DAOut/100;
-		float temp = 0.1049 * pow(2.718,0.4734*x);
-		return temp;
+//		double x = DAOut/100;
+//		double temp = 0.1049 * pow(2.718,0.4734*x);
+	double x = (DAOut/(float)1000);
+	double g =  -2.288*x + 2.1424;
+	double temp = 30.267*pow(2.178,-4.386*x);
+	return temp;
 }
  
 IsSuitable_Type Control_NeedToAdjust(u16 peakValue,u16 valleyValue)

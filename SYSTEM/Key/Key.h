@@ -25,6 +25,8 @@
 #define __KEY__H
 
 	#include "sys.h"
+	#include "display.h"
+#include "delay.h"
 void Key_Init(void);
 extern u8 pause;	
 extern u8 moveFlag;

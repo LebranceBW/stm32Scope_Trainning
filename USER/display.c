@@ -261,9 +261,19 @@ void display_Gain(s8 g)
 void display_PeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = (peakValue-0x7ff)*(float)3.24 / (float)0xFFF;
-//	u8 temp = (peakValue - valleyValue)*10/Control_DAConverRate();
-	u8 temp = temp1;
+//	double temp1 = (peakValue-0x7ff)*(double)3.24 / (double)0xFFF;
+//	temp1 =temp1 * 2 / Control_DAConverRate();
+//	u16 temp = 0;
+//	if(!attenuation) 
+//		temp = (0.0623 *(double)temp1*(double)temp1+0.768*(double)temp1 -0.0229)*10;
+//	else temp = (1.490 *(double)temp1*(double)temp1+2.099*(double)temp1 +1.876)*10 - 6;
+	double temp1 = (peakValue-valleyValue)*(double)3.24 /(double)0xFFF ;
+//	u16 temp = (peakValue - valleyValue)*Control_DAConverRate()/(double)1000;
+	temp1 =temp1 * 2 / Control_DAConverRate();
+	u16 temp = 0;
+	if(!attenuation) 
+		temp = (0.0623 *(double)temp1*(double)temp1+0.768*(double)temp1 -0.0229)*5;
+	else temp = (1.490 *(double)temp1*(double)temp1+2.099*(double)temp1 +1.876)*5;
 	u8 s[9] = {(u8)'V',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[3] = (temp/100==0)?' ':temp/100+'0';
 	temp %=100;
@@ -275,8 +285,13 @@ void display_PeakValue()
 void display_PeakToPeakValue()
 {
 	POINT_COLOR = WHITE;
-	float temp1 = (peakValue-valleyValue)*(float)3.24 /(float)0xFFF ;
-	u8 temp = (peakValue - valleyValue)*10*Control_DAConverRate()/1000;
+	double temp1 = (peakValue-valleyValue)*(double)3.24 /(double)0xFFF ;
+//	u16 temp = (peakValue - valleyValue)*Control_DAConverRate()/(double)1000;
+	temp1 =temp1 * 2 / Control_DAConverRate();
+	u16 temp = 0;
+	if(!attenuation) 
+		temp = (0.0623 *(double)temp1*(double)temp1+0.768*(double)temp1 -0.0229)*10;
+	else temp = (1.490 *(double)temp1*(double)temp1+2.099*(double)temp1 +1.876)*10;
 //	u8 temp = temp1;
 	u8 s[11] = {(u8)'V',(u8)'p',(u8)'-',(u8)'p',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'V',(u8)'\0'};
 	s[5] = (temp/100==0)?' ':temp/100+'0';
