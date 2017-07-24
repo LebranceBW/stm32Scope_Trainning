@@ -48,7 +48,6 @@ void display_DrawWavePoint()
 }
 void display_DrawWave(u16 *a,u16 length)
 {
-	peakValue = 0; //·åÖµ
 	valleyValue = a[0];
 	display_ClearArea();
 	display_DrawAxis();
@@ -202,7 +201,7 @@ void display_Frequence(float val)
 {
 	POINT_COLOR = WHITE;	
 		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
-	if(1<val < 100)
+	if((1< val)&&(val <= 99))
 	{
 		u32 temp = val * 100;
 		s[2] = (temp/1000==0)?' ':temp/1000+'0';
@@ -213,7 +212,7 @@ void display_Frequence(float val)
 		s[6] = temp % 10 +'0';	
 		LCD_ShowString(Freq_XPos,Freq_YPos,66,12,12,s);
 	}
-	else if(val > 100)
+	else if(val >= 100)
 	{
 //		u8 s[11] = {(u8)'f',(u8)':',(u8)'0',(u8)'0',(u8)'0',(u8)'.',(u8)'0',(u8)'K',(u8)'H',(u8)'z',(u8)'\0'};
 		s[5] = (u8)'.';
